@@ -18,6 +18,9 @@ exception OpNonListT
 fun teval (e: expr) (env: plcType env) : plcType = 
     case e of 
         Var x => lookup env x
+        | ConI x => IntT
+        | ConB _ => BoolT 
+        | List [] => ListT []
         | Prim1(opr, e1) =>
             let val t1 = teval e1 env
             in
