@@ -12,6 +12,11 @@ fun run(e: expr) =
       | UnknownType => "Unknown type."
       | NotEqTypes => "Types in comparison are different."
       | WrongRetType => "Wrong return type in function."
+      | Impossible => "Impossible to evaluate expression."
+      | HDEmptySeq => "'hd' called with an empty sequence argument."
+      | TLEmptySeq => "'tl' called with an empty sequence argument."
+      | ValueNotFoundInMatch => "Value not found in match."
+      | NotAFunc => "Eval Call: not a function."
       | DiffBrTypes => "'if' branch types differ."
       | IfCondNotBool => "'if' condition not Boolean."
       | NoMatchResults => "No Match results."
@@ -21,11 +26,6 @@ fun run(e: expr) =
       | NotFunc => "Not a function."
       | ListOutOfRange => "List index out of range."
       | OpNonList => "Selection with operator # applied to non-list."
-      | Impossible => "Impossible to evaluate expression."
-      | HDEmptySeq => "'hd' called with an empty sequence argument."
-      | TLEmptySeq => "'tl' called with an empty sequence argument."
-      | ValueNotFoundInMatch => "Value not found in match."
-      | NotAFunc => "Eval Call: not a function."
     end
 
 
