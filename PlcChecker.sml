@@ -41,7 +41,7 @@ fun teval (e: expr) (env: plcType env) : plcType =
                 ListT types
             end
         | ESeq (SeqT t)  => SeqT t
-        (* | Letrec (f, t1, x, t2, e1, e2) =>
+        | Letrec (f, t1, x, t2, e1, e2) =>
             let
                 val env' = (f, FunT (t1, t2)) :: env
                 val env'' = (x, t1) :: env'
@@ -51,7 +51,7 @@ fun teval (e: expr) (env: plcType env) : plcType =
                     teval e2 env'
                 else
                     raise WrongRetType
-            end *)
+            end
         | If (e1, e2, e3) =>
             let
                 val t1 = teval e1 env
@@ -102,7 +102,22 @@ fun teval (e: expr) (env: plcType env) : plcType =
                                 raise MatchResTypeDiff
                         else
                             raise MatchCondTypesDiff
-            end  
+            end 
+        | Anon(s, x, e) => 
+            let 
+                val t = teval e ((x,s) :: env)
+            in
+                FunT (s, t)
+            end
+        | Call(e2, e1) =>
+            let
+                val t1 = teval e1 env
+                val t2 = teval e2 env
+            in
+                case t2 of
+                    FunT (t1', t2') => if t1 = t1' then t2' else raise CallTypeMisM
+                    | _ => raise NotFunc
+            end
         | Prim1(opr, e1) =>
             let val t1 = teval e1 env
             in
