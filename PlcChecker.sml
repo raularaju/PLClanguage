@@ -22,6 +22,8 @@ fun isEqualType (t: plcType) : bool =
         | ListT (hd :: tl) => isEqualType hd andalso isEqualType (ListT tl)
         | SeqT t => isEqualType t
         | _ => false
+
+
 fun ithTypeList (l: plcType list) (i: int) : plcType = 
     case l of 
         [] => raise ListOutOfRange
@@ -50,6 +52,57 @@ fun teval (e: expr) (env: plcType env) : plcType =
                 else
                     raise WrongRetType
             end *)
+        | If (e1, e2, e3) =>
+            let
+                val t1 = teval e1 env
+                val t2 = teval e2 env
+                val t3 = teval e3 env
+            in
+                if t1 = BoolT then
+                    if t2 = t3 then
+                        t2
+                    else
+                        raise DiffBrTypes
+                else
+                    raise IfCondNotBool
+            end
+        | Match (e, l) =>
+            let 
+                val t1 = teval e env
+                fun areAllCondTypesMatchSame (l: (expr option * expr) list) (t1: plcType) (env: plcType env) : bool =
+                    case l of 
+                        [] => true
+                        | (NONE , _) :: tl => areAllCondTypesMatchSame tl t1 env
+                        | (SOME e, _) :: tl => 
+                            let val t = teval e env
+                            in
+                                if t = t1 then areAllCondTypesMatchSame tl t1 env else false
+                            end                 
+                fun areAllRetuTypesMatchSame (l: (expr option * expr) list) (env: plcType env): bool =
+                    case l of 
+                        [] => true   
+                        | (_, _) :: [] => true                          
+                        | (_, e1) :: (ec, e2) ::tl => 
+                            let val t1 = teval e1 env
+                                val t2 = teval e2 env
+                            in
+                                if t1 = t2 then areAllRetuTypesMatchSame (( ec, e2) :: tl) env else false 
+                            end
+            in 
+            case l of 
+                [] => raise NoMatchResults
+                | _ =>  if areAllCondTypesMatchSame l t1 env then
+                            if areAllRetuTypesMatchSame l env then
+                                let 
+                                    val (_, er) = hd l
+                                in
+                                    teval er env
+                                end
+                            else
+                                raise MatchResTypeDiff
+                        else
+                            raise MatchCondTypesDiff
+            end  
         | Prim1(opr, e1) =>
             let val t1 = teval e1 env
             in
@@ -97,3 +150,4 @@ fun teval (e: expr) (env: plcType env) : plcType =
                 teval e2 env'
             end
         | _ => raise UnknownType
+
