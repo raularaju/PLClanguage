@@ -42,18 +42,17 @@ fun teval (e: expr) (env: plcType env) : plcType =
             in
                 case (opr, t1, t2) of
                  ("*", IntT, IntT) => IntT
-                | ("/", IntT, ListT _) => IntT
-                | ("+", IntT, ListT _) => IntT
-                | ("-", IntT, ListT _) => IntT
+                | ("/", IntT, IntT) => IntT
+                | ("+", IntT, IntT) => IntT
+                | ("-", IntT, IntT) => IntT
                 | (";", _, _ ) => t2
                 | _ => raise UnknownType
             end
         | Let(x, e1, e2) =>
             let
-                val t = teval e1 env
-                val env' = (x,t) :: env
+                val t1 = teval e1 env
+                val env' = (x,t1) :: env
             in
                 teval e2 env'
             end
-
         | _ => raise UnknownType
