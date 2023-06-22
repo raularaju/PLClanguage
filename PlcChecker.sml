@@ -21,6 +21,13 @@ fun teval (e: expr) (env: plcType env) : plcType =
         | ConI x => IntT
         | ConB _ => BoolT 
         | List [] => ListT []
+        | List (x :: t) =>
+            let val types = map (fn e => teval e env) (x :: t)
+            in
+                ListT types
+            end
+        | ESeq (SeqT t)  => SeqT t
+        (* | Letrec () *)
         | Prim1(opr, e1) =>
             let val t1 = teval e1 env
             in
