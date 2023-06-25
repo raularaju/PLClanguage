@@ -43,7 +43,7 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
                     | ("*", IntV i1, IntV i2) => IntV (i1 * i2)
                     | ("/", IntV i1, IntV i2) => IntV (i1 div i2)
                     | ("&&", BoolV b1, BoolV b2) => BoolV (b1 andalso b2)
-                    (* | ("::", _, _) => SeqV (v1::(v2)) *) (* Isso aqui tá errado *)
+                    | ("::", _, SeqV l) => SeqV (v1 :: l)
                     | ("<", IntV i1, IntV i2) => BoolV (i1 < i2)
                     | ("<=", IntV i1, IntV i2) => BoolV (i1 <= i2)
                     | ("=",  i1,  i2) => BoolV (i1 = i2)
