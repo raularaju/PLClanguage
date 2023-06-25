@@ -14,6 +14,15 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
         | List [] => ListV []
         | List l => ListV (map (fn x => eval x env) l)
         | ESeq (SeqT t) => SeqV []
+        | If(e1, e2, e3) =>
+            let
+                val v1 = eval e1 env
+            in 
+                case v1 of
+                    BoolV true => eval e2 env
+                    | BoolV false => eval e3 env
+                    | _ => raise Impossible
+            end
         | Prim1(opr, e1) =>
             let
                 val v1 = eval e1 env
