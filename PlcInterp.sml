@@ -23,7 +23,20 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
                     | BoolV false => eval e3 env
                     | _ => raise Impossible
             end
-        
+        | Match(e, l) => (* Não considera que pode haver matches redundantes *)
+            let
+                val v = eval e env
+            in 
+                case l of 
+                        (NONE , e1) :: tl => eval e1 env
+                        | (SOME e1, e2 ) :: tl => 
+                            let val v1 = eval e1 env
+                            in
+                                if v = v1 then eval e2 env
+                                else eval (Match(e, tl)) env
+                            end  
+            end
+            
         | Prim1(opr, e1) =>
             let
                 val v1 = eval e1 env
@@ -67,7 +80,7 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
             in 
                 case v of
                     ListV l => List.nth(l, i-1)
-                    | _ => raise OpNonList
+                    | _ => raise OpNonListT
             end
         | Let(x, e1, e2) =>
             let 
