@@ -136,10 +136,10 @@ fun teval (e: expr) (env: plcType env) : plcType =
                 val t2 = teval e2 env
             in
                 case (opr, t1, t2) of
-                 ("*", IntT, IntT) => IntT
-                | ("/", IntT, IntT) => IntT
-                | ("+", IntT, IntT) => IntT
+                  ("+", IntT, IntT) => IntT
                 | ("-", IntT, IntT) => IntT
+                | ("*", IntT, IntT) => IntT
+                | ("/", IntT, IntT) => IntT
                 | ("&&", BoolT, BoolT) => BoolT
                 | ("::", _ , SeqT tSeq) => if t1 = tSeq then SeqT tSeq else raise UnknownType 
                 | ("<", IntT, IntT) => BoolT
