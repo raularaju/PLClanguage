@@ -8,20 +8,28 @@ exception NotAFunc
 
 fun eval (e: expr) (env: plcVal env) : plcVal =
     case e of 
-         ConI i => IntV i
-        | Var x => lookup env x
+        Var x => lookup env x
+        | ConI i => IntV i
+        | ConB b => BoolV b
+        | List [] => ListV []
+        | List l =>
+            let val lis = map(fn )
         | Prim1(opr, e1) =>
             let
                 val v1 = eval e1 env
             in
                 case (opr, v1) of   
-                     ("-", IntV i) => IntV (~i)
-                    | ("print", _) =>
+                    ("print", _) =>
                                     let
                                         val s = val2string v1
                                     in 
                                         print(s^"\n"); ListV []
                                     end
+                    | ("-", IntV i) => IntV (~i)
+                    | ("!", BoolV b) => BoolV (not b)
+                    | ("hd", SeqV _) => if v1 = ListV [] then raise HDEmptySeq else hd l
+                    | ("tl", SeqV _) => if v1 = ListV [] then raise TLEmptySeq else ListV (tl l)
+                    | ("ise", SeqV _) => if v1 = ListV [] then BoolV true else BoolV false
                     | _ => raise Impossible
             end
         | Prim2(opr, e1, e2) =>

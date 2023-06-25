@@ -1,5 +1,2 @@
-fun rec f(Int x):Int = {
-  print x;
-  if x = 0 then 0 else x + f(x-1)
-  };
-f(1)
+val E = ([Int] [])
+1 :: 2 :: 3 :: E

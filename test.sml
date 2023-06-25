@@ -22,4 +22,4 @@ use "Plc.sml";
 
 val abs = fromFile "tests/t1.plc";
 val venv = []
-val v = teval abs venv;
+val v = eval abs venv;
