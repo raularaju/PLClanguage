@@ -67,7 +67,7 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
             in 
                 case v of
                     ListV l => List.nth(l, i-1)
-                    | _ => raise Impossible
+                    | _ => raise OpNonList
             end
         | Let(x, e1, e2) =>
             let 
