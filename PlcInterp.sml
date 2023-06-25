@@ -12,8 +12,6 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
         | ConI i => IntV i
         | ConB b => BoolV b
         | List [] => ListV []
-        | List l =>
-            let val lis = map(fn )
         | Prim1(opr, e1) =>
             let
                 val v1 = eval e1 env
@@ -27,8 +25,8 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
                                     end
                     | ("-", IntV i) => IntV (~i)
                     | ("!", BoolV b) => BoolV (not b)
-                    | ("hd", SeqV _) => if v1 = ListV [] then raise HDEmptySeq else hd l
-                    | ("tl", SeqV _) => if v1 = ListV [] then raise TLEmptySeq else ListV (tl l)
+                    | ("hd", SeqV l) => if v1 = ListV [] then raise HDEmptySeq else hd l
+                    | ("tl", SeqV l) => if v1 = ListV [] then raise TLEmptySeq else ListV (tl l)
                     | ("ise", SeqV _) => if v1 = ListV [] then BoolV true else BoolV false
                     | _ => raise Impossible
             end
