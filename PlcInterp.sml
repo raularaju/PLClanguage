@@ -23,6 +23,7 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
                     | BoolV false => eval e3 env
                     | _ => raise Impossible
             end
+        
         | Prim1(opr, e1) =>
             let
                 val v1 = eval e1 env
@@ -58,6 +59,14 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
                     | ("=",  i1,  i2) => BoolV (i1 = i2)
                     | ("!=", x, y) => BoolV (x <> y)
                     | (";", _, _) => v2
+                    | _ => raise Impossible
+            end
+        | Item(i, l) =>
+            let 
+                val v = eval l env
+            in 
+                case v of
+                    ListV l => List.nth(l, i-1)
                     | _ => raise Impossible
             end
         | Let(x, e1, e2) =>
