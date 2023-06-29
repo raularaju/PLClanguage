@@ -14,6 +14,28 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
         | List [] => ListV []
         | List l => ListV (map (fn x => eval x env) l)
         | ESeq (SeqT t) => SeqV []
+        | If(e1, e2, e3) =>
+            let
+                val v1 = eval e1 env
+            in 
+                case v1 of
+                    BoolV true => eval e2 env
+                    | BoolV false => eval e3 env
+                    | _ => raise Impossible
+            end
+        | Match(e, l) => (* Não considera que pode haver matches redundantes *)
+            let
+                val v = eval e env
+            in 
+                case l of 
+                        (NONE , e1) :: tl => eval e1 env
+                        | (SOME e1, e2 ) :: tl => 
+                            let val v1 = eval e1 env
+                            in
+                                if v = v1 then eval e2 env
+                                else eval (Match(e, tl)) env
+                            end  
+            end
         | Prim1(opr, e1) =>
             let
                 val v1 = eval e1 env
@@ -51,11 +73,37 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
                     | (";", _, _) => v2
                     | _ => raise Impossible
             end
+        | Item(i, l) =>
+            let 
+                val v = eval l env
+            in 
+                case v of
+                    ListV l => List.nth(l, i-1)
+                    | _ => raise OpNonListT
+            end
         | Let(x, e1, e2) =>
             let 
                 val v = eval e1 env
                 val env' = (x,v)::env
             in 
+                eval e2 env'
+            end
+        | Anon(t, x, e) => Clos("", x, e, env)
+        | Call(func, p) => 
+            let
+                val v = eval func env
+                val param = eval p env
+            in
+                case v of
+                    Clos(t, x, e, fenv) =>
+                        eval e ((t, v) :: (x, param) :: fenv)
+                    | _ => raise NotFunc
+            end
+        | Letrec(f, tf, x, tx, e1, e2) =>
+            let 
+                val v = Clos(f, x, e1, env)
+                val env' = (f, v)::env
+            in
                 eval e2 env'
             end
         | _ => raise Impossible
