@@ -3,7 +3,6 @@
 exception Impossible
 exception HDEmptySeq
 exception TLEmptySeq
-exception NoMatchResults
 exception NotAFunc
 
 fun eval (e: expr) (env: plcVal env) : plcVal =
