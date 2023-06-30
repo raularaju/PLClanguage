@@ -3,7 +3,7 @@
 exception Impossible
 exception HDEmptySeq
 exception TLEmptySeq
-exception ValueNotFoundInMatch
+exception NoMatchResults
 exception NotAFunc
 
 fun eval (e: expr) (env: plcVal env) : plcVal =
@@ -28,7 +28,7 @@ fun eval (e: expr) (env: plcVal env) : plcVal =
                 val v = eval e env
             in 
                 case l of 
-                        [] => raise ValueNotFoundInMatch
+                        [] => raise NoMatchResults
                         | (NONE , e1) :: tl => eval e1 env
                         | (SOME e1, e2 ) :: tl => 
                             let val v1 = eval e1 env
