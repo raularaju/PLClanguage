@@ -6,6 +6,7 @@ fun run(e: expr) =
         val eValue = eval e []
     in  
         (val2string eValue) ^ " : " ^ (type2string eType)
+    end
     handle
         SymbolNotFound => "Symbol not found."
       | EmptySeq => "Empty sequence."
@@ -26,7 +27,6 @@ fun run(e: expr) =
       | NotFunc => "Not a function."
       | ListOutOfRange => "List index out of range."
       | OpNonList => "Selection with operator # applied to non-list."
-    end
 
 
 

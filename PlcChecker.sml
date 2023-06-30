@@ -12,7 +12,7 @@ exception MatchCondTypesDiff
 exception CallTypeMisM
 exception NotFunc
 exception ListOutOfRange
-exception OpNonListT
+exception OpNonList
 
 fun isEqualType (t: plcType) : bool = 
     case t of 
@@ -41,6 +41,7 @@ fun teval (e: expr) (env: plcType env) : plcType =
                 ListT types
             end
         | ESeq (SeqT t)  => SeqT t
+        | ESeq _ => raise EmptySeq
         | Letrec (f, t1, x, t2, e1, e2) =>
             let
                 val env' = (f, FunT (t1, t2)) :: env
@@ -125,8 +126,8 @@ fun teval (e: expr) (env: plcType env) : plcType =
                     ("print", _) => ListT []
                     | ("-", IntT) => IntT
                     | ("!", BoolT) => BoolT
-                    | ("hd", SeqT t) => if t1 = ListT [] then raise EmptySeq else t
-                    | ("tl", SeqT t) => SeqT t
+                    | ("hd", SeqT t) => t
+                    | ("tl", SeqT t) => t1
                     | ("ise", SeqT _) => BoolT
                     | _ => raise UnknownType
             end
@@ -154,8 +155,8 @@ fun teval (e: expr) (env: plcType env) : plcType =
                 val t = teval l env
             in
                 case t of
-                    ListT types =>  ithTypeList (types) i 
-                    | _ => raise OpNonListT
+                    ListT types =>  if 0 < i andalso i <= List.length types then List.nth(types, i) else raise ListOutOfRange
+                    | _ => raise OpNonList
             end
         | Let(x, e1, e2) =>
             let
@@ -164,5 +165,4 @@ fun teval (e: expr) (env: plcType env) : plcType =
             in
                 teval e2 env'
             end
-        | _ => raise UnknownType
 
