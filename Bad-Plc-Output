@@ -1,0 +1,16 @@
+1. Symbol not found.
+2. Type mismatch in function call.
+3. Types in comparison are different.
+4. Types in comparison are different.
+5. Wrong return type in function.
+6. 'if' branch types differ.
+7. 'if' condition not Boolean.
+8. No Match results.
+9. 'match' result types differ.
+10. 'match' condition types differ matching expression's type.
+11. Not a function.
+12. List index out of range.
+13. Selection with operator # applied to non-list.
+14. 'hd' called with an empty sequence argument.
+15. 'tl' called with an empty sequence argument.
+16. No Match results.

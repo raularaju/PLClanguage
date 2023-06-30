@@ -155,7 +155,7 @@ fun teval (e: expr) (env: plcType env) : plcType =
                 val t = teval l env
             in
                 case t of
-                    ListT types =>  if 0 < i andalso i <= List.length types then List.nth(types, i) else raise ListOutOfRange
+                    ListT types =>  if 0 < i andalso i <= List.length types then List.nth(types, i - 1) else raise ListOutOfRange
                     | _ => raise OpNonList
             end
         | Let(x, e1, e2) =>
